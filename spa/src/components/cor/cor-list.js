@@ -13,8 +13,12 @@ const CorList = () => {
         setCores(response.data);
     }
 
-    const deleteCorFromServer = async (id) => {
+    const deleteCorFromServer = async (id) => {      
+        if (!window.confirm("Você realmente quer excluir?")) {
+            return;
+        }  
         const response = await axios.delete(`/api/cores/${id}`);
+        alert(`Cor ${id} excluída!`);
         getCoresFromServer();
     }
 

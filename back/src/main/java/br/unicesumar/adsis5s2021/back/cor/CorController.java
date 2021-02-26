@@ -23,12 +23,12 @@ public class CorController {
         cores.add(new Cor("RX", "Roxo"));
         cores.add(new Cor("MRL", "Amarelo"));
     }
-
+ 
     @DeleteMapping("/{id}") 
     public void delete(@PathVariable("id") String id) {
         cores = cores.stream().filter(c -> !c.getId().equals(id)).collect(Collectors.toList());
     }
- 
+  
     @GetMapping
     public List<Cor> get() {
         return cores;
