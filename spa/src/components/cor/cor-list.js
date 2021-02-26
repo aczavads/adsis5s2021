@@ -4,6 +4,10 @@ import axios from 'axios';
 const CorList = () => {
     const [cores, setCores] = useState([]);
 
+    useEffect(()=> {
+        getCoresFromServer();
+    },[])
+
     const getCoresFromServer = async () => {
         const response = await axios.get("/api/cores");
         setCores(response.data);
@@ -14,9 +18,6 @@ const CorList = () => {
         getCoresFromServer();
     }
 
-    useEffect(()=> {
-        getCoresFromServer();
-    })
 
     const linhasDaTabelaDinâmico = cores.map(elemento => {
         return (

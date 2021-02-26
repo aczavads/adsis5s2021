@@ -28,7 +28,7 @@ public class CorController {
     public void delete(@PathVariable("id") String id) {
         cores = cores.stream().filter(c -> !c.getId().equals(id)).collect(Collectors.toList());
     }
-
+ 
     @GetMapping
     public List<Cor> get() {
         return cores;
