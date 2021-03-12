@@ -44,7 +44,7 @@ const CorList = () => {
         <div>
             <h2>Listagem de Cores</h2>
             <hr></hr>
-            <Link to="/cores/editar">
+            <Link to="/cores/incluir">
                 <button type="submit">Nova Cor</button>
             </Link>
             <table>

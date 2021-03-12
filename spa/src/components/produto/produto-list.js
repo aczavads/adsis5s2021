@@ -45,7 +45,7 @@ const ProdutoList = () => {
         <div>
             <h2>Listagem de Produtos</h2>
             <hr></hr>
-            <Link to="/produtos/editar">
+            <Link to="/produtos/incluir">
                 <button type="submit">Novo Produto</button>
             </Link>
             <table>
