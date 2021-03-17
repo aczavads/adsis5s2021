@@ -6,6 +6,7 @@ import Menu from '../landing/menu';
 
 const ProdutoList = () => {
     const [produtos, setProdutos] = useState([]);
+    const [termoDePesquisa, setTermoDePesquisa] = useState("");
 
     useEffect(()=> {
         getProdutosFromServer();
@@ -15,6 +16,13 @@ const ProdutoList = () => {
         const response = await axios.get("/api/produtos");
         setProdutos(response.data);
     }
+
+    const getProdutosFromServerComTermo = async () => {
+        console.log(`Pesquisando com o termo: [${termoDePesquisa}]`)
+        const response = await axios.get(`/api/produtos?termoDePesquisa=${termoDePesquisa}`);
+        setProdutos(response.data);
+    }
+
 
     const deleteProdutoFromServer = async (id) => {      
         if (!window.confirm("Você realmente quer excluir?")) {
@@ -42,6 +50,21 @@ const ProdutoList = () => {
         );
     });
 
+    const handleChangeTermoDePesquisa = (event) => {
+        setTermoDePesquisa(event.target.value);
+    }
+    const handlePesquisar = () => { 
+        if (termoDePesquisa == undefined || termoDePesquisa === "") {
+            getProdutosFromServer();
+        } else {
+            getProdutosFromServerComTermo();
+        }
+    }
+    const handleLimpar = () => {
+        setTermoDePesquisa("");
+        getProdutosFromServer();
+    }
+
     return (
         <div>
             <Menu></Menu>
@@ -50,6 +73,11 @@ const ProdutoList = () => {
             <Link to="/produtos/incluir">
                 <button type="submit">Novo Produto</button>
             </Link>
+            <div>
+                <input onChange={handleChangeTermoDePesquisa} value={termoDePesquisa} type="text"></input>
+                <button onClick={handlePesquisar}>Pesquisar</button>
+                <button onClick={handleLimpar}>Limpar</button>
+            </div>
             <table>
                 <thead>
                     <tr>

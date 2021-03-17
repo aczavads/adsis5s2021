@@ -14,8 +14,11 @@ public class ProdutoService {
     private ProdutoRepository repository;
 
 
-    public List<Produto> obterTodos() {
-        return repository.findAll();
+    public List<Produto> obterTodos(String termoDePesquisa) {
+        if (termoDePesquisa == null || termoDePesquisa.trim().length() == 0) {
+            return repository.findAll();
+        }
+        return repository.encontrarPelaDescrição(termoDePesquisa);
     }
 
     public Produto obterPeloId(String id) {

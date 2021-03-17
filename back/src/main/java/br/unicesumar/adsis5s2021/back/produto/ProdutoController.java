@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -37,8 +38,8 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public List<Produto> get() {
-        return service.obterTodos();
+    public List<Produto> get(@RequestParam(name = "termoDePesquisa", required = false) String termoDePesquisa) {
+        return service.obterTodos(termoDePesquisa);
     }
 
     @PostMapping
