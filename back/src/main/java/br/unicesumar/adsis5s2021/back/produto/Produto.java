@@ -31,5 +31,13 @@ public class Produto {
     @Setter
     @Column(precision = 15, scale = 2)
     private BigDecimal precoUnitario;    
+
+
+    public Produto(String descricao, LocalDate lancadoEm, BigDecimal precoUnitario) {        
+        this.descricao = descricao;
+        this.lancadoEm = lancadoEm;
+        this.precoUnitario = precoUnitario;
+    }
+
     
 }

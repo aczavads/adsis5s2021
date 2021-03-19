@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,14 +40,29 @@ public class ProdutoController {
     }
 
     @GetMapping
+    public Page<Produto> get(Pageable p, @RequestParam(name = "termoDePesquisa", required = false) String termoDePesquisa) {
+        System.out.println("Termo=" + termoDePesquisa);
+        return service.obterTodosPaginando(p, termoDePesquisa);
+    }
+
+/*
+    @GetMapping
     public List<Produto> get(@RequestParam(name = "termoDePesquisa", required = false) String termoDePesquisa) {
         return service.obterTodos(termoDePesquisa);
     }
+    */
 
     @PostMapping
     public String post(@RequestBody Produto novo) {
         service.salvar(novo);
         return novo.getId();
     }
+
+    @PostMapping("/gerar")
+    public String postGerar() {
+        service.gerarDadosTeste();
+        return "Feito";
+    }
+
 
 }

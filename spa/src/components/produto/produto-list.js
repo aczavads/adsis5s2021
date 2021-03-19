@@ -7,29 +7,24 @@ import Menu from '../landing/menu';
 const ProdutoList = () => {
     const [produtos, setProdutos] = useState([]);
     const [termoDePesquisa, setTermoDePesquisa] = useState("");
+    const [pagina, setPagina] = useState({pageNumber: 0, totalPages: 0});
 
     useEffect(()=> {
         getProdutosFromServer();
     },[])
 
-    const getProdutosFromServer = async () => {
-        const response = await axios.get("/api/produtos");
-        setProdutos(response.data);
+    const getProdutosFromServer = async (pageNumber) => {
+        const response = await axios.get(`/api/produtos?termoDePesquisa=${termoDePesquisa}&page=${pageNumber}`);
+        setProdutos(response.data.content);
+        setPagina({pageNumber: response.data.pageable.pageNumber, totalPages : response.data.totalPages});
     }
-
-    const getProdutosFromServerComTermo = async () => {
-        console.log(`Pesquisando com o termo: [${termoDePesquisa}]`)
-        const response = await axios.get(`/api/produtos?termoDePesquisa=${termoDePesquisa}`);
-        setProdutos(response.data);
-    }
-
 
     const deleteProdutoFromServer = async (id) => {      
         if (!window.confirm("Você realmente quer excluir?")) {
             return;
         }  
         const response = await axios.delete(`/api/produtos/${id}`);
-        getProdutosFromServer();
+        getProdutosFromServer(0);
     }
 
 
@@ -54,15 +49,21 @@ const ProdutoList = () => {
         setTermoDePesquisa(event.target.value);
     }
     const handlePesquisar = () => { 
-        if (termoDePesquisa == undefined || termoDePesquisa === "") {
-            getProdutosFromServer();
-        } else {
-            getProdutosFromServerComTermo();
-        }
+        getProdutosFromServer();
     }
     const handleLimpar = () => {
         setTermoDePesquisa("");
-        getProdutosFromServer();
+        getProdutosFromServer(0);
+    }
+    const handlePreviousPage = () => {
+        if (pagina.pageNumber-1 > 1) {
+            getProdutosFromServer(pagina.pageNumber-1);
+        }
+    }
+    const handleNextPage = () => {
+        if (pagina.pageNumber+1 < pagina.totalPages) {
+            getProdutosFromServer(pagina.pageNumber+1);
+        }
     }
 
     return (
@@ -77,6 +78,11 @@ const ProdutoList = () => {
                 <input onChange={handleChangeTermoDePesquisa} value={termoDePesquisa} type="text"></input>
                 <button onClick={handlePesquisar}>Pesquisar</button>
                 <button onClick={handleLimpar}>Limpar</button>
+            </div>
+            <div>
+                <button onClick={handlePreviousPage}> {"<"} </button>
+                {(pagina.pageNumber+1) + "/" + pagina.totalPages}
+                <button onClick={handleNextPage}> {">"} </button>
             </div>
             <table>
                 <thead>
