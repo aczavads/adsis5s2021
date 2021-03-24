@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import CorEdit from './components/cor/cor-edit';
 import CorList from './components/cor/cor-list';
 import ReactDOM from "react-dom";

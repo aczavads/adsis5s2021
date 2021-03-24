@@ -2,33 +2,57 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from "react-router-dom";
 import Menu from '../landing/menu';
+import { Button, Modal, Table, Container, Row } from 'react-bootstrap';
 
 
 const ProdutoList = () => {
-    const [produtos, setProdutos] = useState([]);
+    const [produtos, setProdutos] = useState({ content: [], pageable: { pageNumber: 0 }, totalPages: 0 });
     const [termoDePesquisa, setTermoDePesquisa] = useState("");
-    const [pagina, setPagina] = useState({pageNumber: 0, totalPages: 0});
+    const [idParaExcluir, setIdParaExcluir] = useState(null);
 
-    useEffect(()=> {
+    useEffect(() => {
         getProdutosFromServer();
-    },[])
+    }, [])
+
+    const handleCloseModalExclusão = () => setIdParaExcluir(null);
+    const handleShowModalExclusão = (id) => setIdParaExcluir(id);
+
+    const modalExclusão = () => {
+        return (
+            <Modal show={idParaExcluir !== null} onHide={handleCloseModalExclusão}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Exclusão</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Confirma a exclusão deste produto?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseModalExclusão}>
+                        Cancelar
+              </Button>
+                    <Button variant="danger" onClick={() => { deleteProdutoFromServer(idParaExcluir) }}>
+                        Excluir
+              </Button>
+                </Modal.Footer>
+            </Modal>
+        );
+    }
+
 
     const getProdutosFromServer = async (pageNumber) => {
         const response = await axios.get(`/api/produtos?termoDePesquisa=${termoDePesquisa}&page=${pageNumber}`);
-        setProdutos(response.data.content);
-        setPagina({pageNumber: response.data.pageable.pageNumber, totalPages : response.data.totalPages});
+        setProdutos(response.data);
     }
 
-    const deleteProdutoFromServer = async (id) => {      
-        if (!window.confirm("Você realmente quer excluir?")) {
-            return;
-        }  
+    const deleteProdutoFromServer = async (id) => {
+        // if (!window.confirm("Você realmente quer excluir?")) {
+        //     return;
+        // }  
         const response = await axios.delete(`/api/produtos/${id}`);
+        setIdParaExcluir(null);
         getProdutosFromServer(0);
     }
 
 
-    const linhasDaTabelaDinâmico = produtos.map(elemento => {
+    const linhasDaTabelaDinâmico = produtos.content.map(elemento => {
         return (
             <tr key={elemento.id}>
                 <td>{elemento.id}</td>
@@ -36,9 +60,9 @@ const ProdutoList = () => {
                 <td>{elemento.lancadoEm}</td>
                 <td>{elemento.precoUnitario}</td>
                 <td>
-                    <button onClick={() => deleteProdutoFromServer(elemento.id)}>Excluir</button>
+                    <Button variant="danger" onClick={() => handleShowModalExclusão(elemento.id)}>Excluir</Button>
                     <Link to={`/produtos/editar/${elemento.id}`}>
-                        <button>Editar</button>
+                        <Button variant="primary">Editar</Button>
                     </Link>
                 </td>
             </tr>
@@ -48,43 +72,49 @@ const ProdutoList = () => {
     const handleChangeTermoDePesquisa = (event) => {
         setTermoDePesquisa(event.target.value);
     }
-    const handlePesquisar = () => { 
-        getProdutosFromServer();
+    const handlePesquisar = () => {
+        getProdutosFromServer(0);
     }
     const handleLimpar = () => {
         setTermoDePesquisa("");
         getProdutosFromServer(0);
     }
     const handlePreviousPage = () => {
-        if (pagina.pageNumber-1 > 1) {
-            getProdutosFromServer(pagina.pageNumber-1);
+        if (produtos.pageable.pageNumber - 1 >= 0) {
+            getProdutosFromServer(produtos.pageable.pageNumber - 1);
         }
     }
     const handleNextPage = () => {
-        if (pagina.pageNumber+1 < pagina.totalPages) {
-            getProdutosFromServer(pagina.pageNumber+1);
+        if (produtos.pageable.pageNumber + 1 < produtos.totalPages) {
+            getProdutosFromServer(produtos.pageable.pageNumber + 1);
         }
     }
+
 
     return (
         <div>
             <Menu></Menu>
+            {modalExclusão()}
             <h2>Listagem de Produtos</h2>
             <hr></hr>
-            <Link to="/produtos/incluir">
-                <button type="submit">Novo Produto</button>
-            </Link>
-            <div>
-                <input onChange={handleChangeTermoDePesquisa} value={termoDePesquisa} type="text"></input>
-                <button onClick={handlePesquisar}>Pesquisar</button>
-                <button onClick={handleLimpar}>Limpar</button>
-            </div>
-            <div>
-                <button onClick={handlePreviousPage}> {"<"} </button>
-                {(pagina.pageNumber+1) + "/" + pagina.totalPages}
-                <button onClick={handleNextPage}> {">"} </button>
-            </div>
-            <table>
+            <Container>
+                <Row>
+                    <Link to="/produtos/incluir">
+                        <Button variant="success" type="submit">Novo Produto</Button>
+                    </Link>
+                    <div>
+                        <Button onClick={handlePreviousPage}> {"<"} </Button>
+                        {(produtos.pageable.pageNumber + 1) + "/" + produtos.totalPages}
+                        <Button onClick={handleNextPage}> {">"} </Button>
+                    </div>
+                    <div>
+                        <input onChange={handleChangeTermoDePesquisa} value={termoDePesquisa} type="text"></input>
+                        <button variant="primary" onClick={handlePesquisar}>Pesquisar</button>
+                        <button variant="primary" onClick={handleLimpar}>Limpar</button>
+                    </div>
+                </Row>
+            </Container>
+            <Table striped bordered hover>
                 <thead>
                     <tr>
                         <th>id</th>
@@ -97,9 +127,10 @@ const ProdutoList = () => {
                 <tbody>
                     {linhasDaTabelaDinâmico}
                 </tbody>
-            </table>
+            </Table>
         </div>
     )
 }
 
 export default ProdutoList;
+
