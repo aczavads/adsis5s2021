@@ -13,6 +13,7 @@ const Menu = () => {
                     <Nav.Link as={Link} to="/">Landing Page</Nav.Link>
                     <Nav.Link as={Link} to="/cores">Cores</Nav.Link>
                     <Nav.Link as={Link} to="/produtos">Produtos</Nav.Link>
+                    <Nav.Link as={Link} to="/produtos2">Produtos2 (DOIS!)</Nav.Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import ProdutoList from './components/produto/produto-list';
 import ProdutoEdit from './components/produto/produto-edit';
 import LandingPage from './components/landing/landing-page';
+import ManterProduto2 from './components/produto2/manter-produto2';
 
 function App() {
   var mensagens = "";
@@ -30,15 +31,13 @@ function App() {
           <Route path="/cores/editar/:idParaEditar">
             <CorEdit></CorEdit>
           </Route>
-          <Route exact path="/produtos">
-            <ProdutoList></ProdutoList>
-          </Route>
-          <Route exact path="/produtos/incluir">
-            <ProdutoEdit></ProdutoEdit>
-          </Route>
-          <Route path="/produtos/editar/:idParaEditar">
-            <ProdutoEdit></ProdutoEdit>
-          </Route>
+
+          <Route exact path="/produtos" component={ProdutoList}></Route>
+          <Route path="/produtos/incluir" component={ProdutoEdit}></Route>
+          <Route path="/produtos/editar/:idParaEditar" component={ProdutoEdit}></Route>
+
+          <Route path="/produtos2" component={ManterProduto2}></Route>
+
         </Switch>
       </Router>
     </div>
