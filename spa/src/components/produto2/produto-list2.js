@@ -7,12 +7,12 @@ import { Button, Modal, Table, Container, Row } from 'react-bootstrap';
 
 const ProdutoList2 = (props) => {
     //const [statusPesquisa, setStatusPesquisa] = useState({ páginaAtual: 0, termoDePesquisa: "" });
-    const {statusPesquisa, setStatusPesquisa} = props;
+    const { statusPesquisa, setStatusPesquisa } = props;
     const [produtos, setProdutos] = useState({ content: [], pageable: { pageNumber: 0 }, totalPages: 0 });
     const [idParaExcluir, setIdParaExcluir] = useState(null);
 
     useEffect(() => {
-        console.log("ProdutoList >>> useEffect/getProdutosFromServer()" );
+        console.log("ProdutoList >>> useEffect/getProdutosFromServer()");
         getProdutosFromServer(statusPesquisa.páginaAtual, statusPesquisa.termoDePesquisa);
     }, [])
 
@@ -29,7 +29,7 @@ const ProdutoList2 = (props) => {
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseModalExclusão}>
                         Cancelar
-              </Button>
+                    </Button>
                     <Button variant="danger" onClick={() => { deleteProdutoFromServer(idParaExcluir) }}>
                         Excluir
               </Button>
@@ -43,7 +43,7 @@ const ProdutoList2 = (props) => {
         console.log(`getProdutosFromServer>> páginaRequerida=${páginaRequerida} e termoDePesquisa=[${termoDePesquisa}]`);
         const response = await axios.get(`/api/produtos?termoDePesquisa=${termoDePesquisa}&page=${páginaRequerida}`);
 
-        const novoStatusPesquisa = {...statusPesquisa, páginaAtual: response.data.pageable.pageNumber };
+        const novoStatusPesquisa = { ...statusPesquisa, páginaAtual: response.data.pageable.pageNumber };
         setStatusPesquisa(novoStatusPesquisa);
 
         setProdutos(response.data);
@@ -53,7 +53,11 @@ const ProdutoList2 = (props) => {
         const response = await axios.delete(`/api/produtos/${id}`);
         setIdParaExcluir(null);
         console.log(`deleteProdutoFromServer>> páginaRequerida=${statusPesquisa.páginaAtual} e termoDePesquisa=[${statusPesquisa.termoDePesquisa}]`);
-        getProdutosFromServer(statusPesquisa.páginaAtual, statusPesquisa.termoDePesquisa);
+        if (produtos.content.length === 1) {
+            getProdutosFromServer(statusPesquisa.páginaAtual - 1, statusPesquisa.termoDePesquisa);
+        } else {
+            getProdutosFromServer(statusPesquisa.páginaAtual, statusPesquisa.termoDePesquisa);
+        }
     }
 
 
@@ -76,14 +80,14 @@ const ProdutoList2 = (props) => {
 
     const handleChangeTermoDePesquisa = (event) => {
         //setTermoDePesquisa(event.target.value);
-        const novoStatusPesquisa = {...statusPesquisa, termoDePesquisa: event.target.value };
+        const novoStatusPesquisa = { ...statusPesquisa, termoDePesquisa: event.target.value };
         setStatusPesquisa(novoStatusPesquisa);
     }
     const handlePesquisar = () => {
         getProdutosFromServer(0, statusPesquisa.termoDePesquisa);
     }
     const handleLimpar = () => {
-        const novoStatusPesquisa = {...statusPesquisa, termoDePesquisa: "" };
+        const novoStatusPesquisa = { ...statusPesquisa, termoDePesquisa: "" };
         setStatusPesquisa(novoStatusPesquisa);
         getProdutosFromServer(0, "");
     }
