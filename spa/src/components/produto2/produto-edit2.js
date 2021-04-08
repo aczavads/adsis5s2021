@@ -9,6 +9,9 @@ const ProdutoEdit2 = () => {
     const { idParaEditar } = useParams();
     const emModoDeEdição = idParaEditar !== undefined;
     const [produto, setProduto] = useState({ descricao: "", lancadoEm: "", precoUnitario: 0.00 });
+    const [isLoading, setIsLoading] = useState(false);
+    const [corSelecionada, setCorSelecionada] = useState([{id:"", nome:""}]);
+    const [coresPesquisadas, setCoresPesquisadas] = useState([]);
 
     const doGetById = async () => {
         const result = await axios.get(`/api/produtos/${idParaEditar}`);
@@ -49,7 +52,26 @@ const ProdutoEdit2 = () => {
         console.log(novaCor);
     }
 
-    console.log(idParaEditar);
+    const searchCores = async (termoDePesquisa) => {
+        console.log("searchCores>>> " + termoDePesquisa) 
+        setIsLoading(true);
+
+        const response = await axios.get(`/api/cores?termoDePesquisa=${termoDePesquisa}`);
+        setCoresPesquisadas(response.data.content);       
+
+        setIsLoading(false);
+    }
+
+    useEffect(() => {
+        if (corSelecionada[0]) {
+            console.log("Selecionada cor: " + corSelecionada[0].id + " " + corSelecionada[0].nome)
+        }
+    },[corSelecionada]);
+
+    const testarSeleção = (selecionada) => {
+        console.log(selecionada);
+    }
+    
     return (
         <div>
             <h2>{emModoDeEdição ? "Edição de Produto" : "Inclusão de Produto"}</h2>
@@ -66,6 +88,20 @@ const ProdutoEdit2 = () => {
 
                 <div>Preço unitário:
                     <input type="text" name="precoUnitario" value={produto.precoUnitario} onChange={handleInputChange}></input>
+                </div>
+                <div>
+                    <Typeahead
+                        id="typeahead-cor-padrão"
+                        filterBy={() => true}
+                        isLoading={isLoading}
+                        labelKey="nome"
+                        multiple={false}
+                        onSearch={searchCores}
+                        onChange={setCorSelecionada}
+                        options={coresPesquisadas}
+                        //selected={corSelecionada}
+                    />
+
                 </div>
 
                 <button type="submit">Enviar</button>
