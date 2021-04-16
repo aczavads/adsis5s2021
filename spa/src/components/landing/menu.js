@@ -14,6 +14,7 @@ const Menu = () => {
                     <Nav.Link as={Link} to="/cores">Cores</Nav.Link>
                     <Nav.Link as={Link} to="/produtos">Produtos</Nav.Link>
                     <Nav.Link as={Link} to="/produtos2">Produtos2 (DOIS!)</Nav.Link>
+                    <Nav.Link as={Link} to="/teste-arthur">Teste Arthur</Nav.Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

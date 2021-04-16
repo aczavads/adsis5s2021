@@ -9,6 +9,7 @@ import ProdutoList from './components/produto/produto-list';
 import ProdutoEdit from './components/produto/produto-edit';
 import LandingPage from './components/landing/landing-page';
 import ManterProduto2 from './components/produto2/manter-produto2';
+import TesteArthur from './components/testeArthur/teste-arthur';
 
 function App() {
   var mensagens = "";
@@ -37,6 +38,11 @@ function App() {
           <Route path="/produtos/editar/:idParaEditar" component={ProdutoEdit}></Route>
 
           <Route path="/produtos2" component={ManterProduto2}></Route>
+
+          <Route exact path="/teste-arthur">
+            <TesteArthur dataAtual={new Date()}></TesteArthur>
+          </Route>
+
 
         </Switch>
       </Router>

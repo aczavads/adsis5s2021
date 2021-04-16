@@ -99,7 +99,7 @@ const ProdutoEdit2 = () => {
                         onSearch={searchCores}
                         onChange={setCorSelecionada}
                         options={coresPesquisadas}
-                        //selected={corSelecionada}
+                        selected={corSelecionada}
                     />
 
                 </div>
